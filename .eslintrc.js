@@ -86,7 +86,7 @@ module.exports = {
     'sonarjs/no-gratuitous-expressions': 'error',
     'sonarjs/no-identical-conditions': 'error',
     'sonarjs/no-identical-expressions': 'error',
-    'sonarjs/no-identical-functions': ['error', 2],
+    'sonarjs/no-identical-functions': ['error', 3],
     'sonarjs/no-ignored-return': 'error',
     'sonarjs/no-inverted-boolean-check': 'error',
     'sonarjs/no-nested-switch': 'error',

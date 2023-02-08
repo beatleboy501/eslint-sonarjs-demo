@@ -1,6 +1,6 @@
 # ESLint + SonarJS Plugin: Name a more iconic duo, I'll wait
 
-## Automated training wheels for writing the best code of your life in JavaScript or Typescript
+## _Automated training wheels for writing the best code of your life in JavaScript or Typescript_
 
 As software engineers we always insist on the highest standards which is why we are constantly on the lookout for guardrails that keep our code running smoothly.  Having used ESLint with the SonarJS plugin successfully on consulting engagements in the past, I strongly feel it can improve the quality of any JS/TS code. The tangible results one could expect to see are reduced code review times, fewer bug tickets, less time spent on tech debt, and more time spent working on new features. If you are not familiar with these two entities I will provide a quick rundown.
 
@@ -102,8 +102,9 @@ console.log(myArray[2]); // outputs 'd'
 ~~~
 
 elseif-without-else
-elseif-without-else
-if() {} elseIf() {} -> if() {} elseIf() {} else {}
+
+Writing an `if - else if` statement requires that there also be an `else` case to tie everything together for logical completeness. It's similar to having a `default` clause in a `switch/case` statement for safety.
+
 Bug Detection Rules
 There are ten bug detection rules available. I won't list all of them here but you can head over to the repo README to see the full list. However, here is a brief explanation of my top three rules.
 no-identical-conditions
@@ -205,6 +206,7 @@ const longWindedFunction = () => {
   const resultString = 'result';
   return resultString;
 };
+
 const unnecessaryUseOfCharacters = () => {
   return {
     foo: 'bar',
@@ -221,6 +223,48 @@ const unnecessaryUseOfCharacters = () => ({ foo: 'bar' });
 
 ### Demo Time
 
-If you want to follow along you can start by cloning this repo. It already has eslint and the SonarJS plugin configured. Start by opening src/Before.tsx in your IDE. There are a number of issues in these components which we will fix using the linter. From your CLI in the root directory run npm run lint you should see some output like the following.
-OutputOpen your src/AfterWithAutomatedFixes.tsx file to see how different the code looks now. A lot of improvements, but as you saw in the console, there is still some work to be done.
-Once you get a hang of it you can keep reducing functions and components to their lowest common denominator. Before long you are achieving the same functionality with fewer lines of code. In this case we eliminate 70 lines of code after applying the automated and manual fixes from ESLint and SonarJS.
+If you want to follow along you can start by cloning this repo. It already has ESLint and the SonarJS plugin configured. Start by opening src/Before.tsx in your IDE. There are a number of issues in these components which we will fix using the linter. From your CLI in the root directory run npm run lint you should see some output like the following.
+
+~~~bash
+4:30  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+    6:3   error    'a' is never reassigned. Use 'const' instead                                                prefer-const
+   11:30  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+   11:30  error    Arrow function has a complexity of 10. Maximum allowed is 9                                 complexity
+   18:28  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+   20:8   warning  Unexpected var, use let or const instead                                                    no-var
+   21:15  error    Function declared in a loop contains unsafe references to variable(s) 'i'                   no-loop-func
+   21:15  error    Function declared in a loop contains unsafe references to variable(s) 'i'                   @typescript-eslint/no-loop-func
+   27:23  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+   37:25  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+   50:27  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+   50:30  error    Expected to return a value at the end of arrow function                                     consistent-return
+   54:5   error    Add the missing "else" clause                                                               sonarjs/elseif-without-else
+   60:32  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+   62:3   error    Remove this conditional structure or edit its code blocks so that they're not all the same  sonarjs/no-all-duplicated-branches
+   72:29  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+   74:19  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+   74:19  error    Arrow function has a complexity of 11. Maximum allowed is 9                                 complexity
+   74:22  error    Refactor this function to reduce its Cognitive Complexity from 11 to the 9 allowed          sonarjs/cognitive-complexity
+  102:7   warning  'CognitiveComplexityTwo' is assigned a value but never used                                 @typescript-eslint/no-unused-vars
+  102:32  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+  102:35  error    Refactor this function to reduce its Cognitive Complexity from 11 to the 9 allowed          sonarjs/cognitive-complexity
+  118:45  error    This branch's code block is the same as the block for the branch on line 112                sonarjs/no-duplicated-branches
+  124:45  error    This branch's code block is the same as the block for the branch on line 112                sonarjs/no-duplicated-branches
+  142:16  error    Define a constant instead of duplicating this literal 4 times                               sonarjs/no-duplicate-string
+  142:31  error    Unexpected string concatenation of literals                                                 no-useless-concat
+  143:31  error    Unexpected string concatenation of literals                                                 no-useless-concat
+  155:31  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+  160:16  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+
+✖ 29 problems (27 errors, 2 warnings)
+~~~
+
+Open your `src/AfterWithAutomatedFixes.tsx` file to see how different the code looks compared to `src/Before.tsx`. A lot of improvements have been automatically applied, you didn't have to do anything. But as you saw in the console, there is still some more work to be done. For example, we are repeating this line in multiple places:
+
+~~~ts
+const random = Math.floor(Math.random() * 100);
+~~~
+
+Let's hoist it to the module scope as a reusable constant. That way, if it needs to be updated one day, we only have to change a single line ; )
+
+Once you get a hang of it you can keep reducing functions and components to their lowest common denominator. Before long you are achieving the same functionality with fewer lines of code. In this case we eliminate over 70 lines of code after applying the automated and manual fixes from ESLint and SonarJS.

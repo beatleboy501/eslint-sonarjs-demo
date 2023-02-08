@@ -53,7 +53,7 @@ const ElseIfWithoutElse = () => {
     return <p>75</p>;
   } else if (random > 50) {
     return <p>50</p>;
-  };
+  }
 };
 
 // no-identical-conditions
@@ -69,23 +69,32 @@ const NoIdentitcalConditions = () => {
 };
 
 // cognitive-complexity
-const CognitiveComplexity = () => {
-  const random = Math.floor(Math.random() * 100);
-  const getText = () => {
+const CognitiveComplexity = (): JSX.Element => {
+  const random: number = Math.floor(Math.random() * 100);
+  const getText = (): string => {
+    const getBetweenFourAndEight = (): string => {
+      if (random < 6) {
+        return 'I am 5';
+      } else {
+        if (random === 6) {
+          return 'I am 6';
+        } else {
+          return 'I am 7';
+        }
+      }
+    };
     if (random === 1) {
       return 'I am 1';
-    } else if (random === 2) {
-      return 'I am 2';
-    } else if (random === 3) {
-      return 'I am 3';
+    } else if (random < 4) {
+      if (random === 2) {
+        return 'I am 2';
+      } else {
+        return 'I am 3';
+      }
     } else if (random === 4) {
       return 'I am 4';
-    } else if (random === 5) {
-      return 'I am 5';
-    } else if (random === 6) {
-      return 'I am 6';
-    } else if (random === 7) {
-      return 'I am 7';
+    } else if (random !== 8 || random !== 9 || random !== 10) {
+      return getBetweenFourAndEight();
     } else if (random === 8) {
       return 'I am 8';
     } else if (random === 9) {
@@ -121,7 +130,7 @@ const CognitiveComplexityTwo = () => {
         <p></p>
       </div>
     );
-  }  else if (randomThing2 && !randomThing3) {
+  } else if (randomThing2 && !randomThing3) {
     return (
       <div>
         <p></p>
@@ -153,8 +162,7 @@ const NoDuplicateString = (): JSX.Element => {
 
 // prefer-immediate-return
 const PreferImmediateReturn = ({ hours, minutes, seconds }: { hours: number, minutes: number, seconds: number }) => {
-  const duration = <p>{((hours * 60 + minutes) * 60 + seconds) * 1000} milliseconds</p>;
-  return duration;
+  return <p>{((hours * 60 + minutes) * 60 + seconds) * 1000} milliseconds</p>;
 };
 
 // render
