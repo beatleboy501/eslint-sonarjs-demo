@@ -22,9 +22,13 @@ Run npm run lint (or whatever your lint command is) from the command line to see
 ### Usage
 
 For an existing code base, it wouldn't be practical to add the error severity for new rules all at once. Instead you should either temporarily ignore or add the warn severity for these new rules introduced by SonarJS. I've split the  rules up into three categories: Recommended, Bug Detection, and Code Smell Detection.
-Recommended Rules
+
+#### Recommended Rules
+
 The plugin exposes to ESLint users a subset of JS/TS rules from SonarJS. SonarJS has around 280 JavaScript and TypeScript rules based on pattern matching and control flow analysis. It includes support for mainstream JS/TS frameworks (React and Vue) and styling frameworks (CSS, SCSS, Less, and CSS-in-JS). It would be crazy to give an overview of all the rules, so I'll just give a quick explanation of some of my favorites.
-cyclomatic-complexity
+
+##### cyclomatic-complexity
+
 Cyclomatic complexity is the measure of how hard to your code is to test. Take the following for example:
 
 ~~~ts
@@ -83,7 +87,9 @@ foo = 100;
 ~~~
 
 Congratulations, you have a very useful utility function that can print the number 100 ten times in a row. The no-loop-func rule can also detect dangerous references inside a loop in addition to function declarations inside a loop.
-no-array-delete
+
+##### no-array-delete
+
 This one doesn't need a whole lot of explanation, just prohibits you from using the delete keyword in JS. Simply put, if you are going to remove an item from an array, it's best not to leave an undefined in its place afterwards. This is what a non-compliant block looks like:
 
 ~~~ts
@@ -101,13 +107,16 @@ removed = myArray.splice(2, 1);  // myArray => ['a', 'b', 'd']
 console.log(myArray[2]); // outputs 'd'
 ~~~
 
-elseif-without-else
+##### elseif-without-else
 
 Writing an `if - else if` statement requires that there also be an `else` case to tie everything together for logical completeness. It's similar to having a `default` clause in a `switch/case` statement for safety.
 
-Bug Detection Rules
+#### Bug Detection Rules
+
 There are ten bug detection rules available. I won't list all of them here but you can head over to the repo README to see the full list. However, here is a brief explanation of my top three rules.
-no-identical-conditions
+
+##### no-identical-conditions
+
 Related "if/else if" statements should not have the same condition. At best, it's simply dead code and at worst, it's a bug that is likely to introduce bugs as the code is extended, and obviously could lead to unintended behavior. Sometimes they are easy to spot such as in this code:
 
 ~~~ts
@@ -127,7 +136,8 @@ However if we were to continue building on this and introduce more variables it 
 return Math.floor(Math.random() * 100) === 50 ? (<p>50</p>) : (<p>Not 50</p>);
 ~~~
 
-no-all-duplicated-branches
+##### no-all-duplicated-branches
+
 This rule is similar to no-identical-conditions except it prevents the logic gated by the condition from being duplicated. Sometimes duplicated branches are easy to miss, especially when you are refactoring existing code:
 
 ~~~ts
@@ -139,10 +149,15 @@ if (variable === true) {
 ~~~
 
 Obviously you don't want the same thing to happen in both cases so this rule helps you out by catching instances of
-Code Smell Rules
-no-identical-functions
+
+#### Code Smell Rules
+
+##### no-identical-functions
+
 I've seen this happen often with custom React hooks in a repo. Having a check for functions with  identical logic ensures you reuse existing code like you're supposed to.
-cognitive-complexity
+
+##### cognitive-complexity
+
 Unlike cyclomatic complexity which we discussed earlier, cognitive complexity refers to how easy or difficult it is for a person to understand and reason about your code. Code with a high cognitive complexity is often harder to understand and maintain, while code with a lower cognitive complexity is easier to understand and work with. Factors that can contribute to cognitive complexity include:
 
 - nested loops
@@ -196,7 +211,8 @@ const CognitiveComplexity = (): JSX.Element => {
 
 As you start to break up monolithic components and functions you begin to realize that the code naturally becomes more extensible and less repetitive. You can easily reuse the smaller components and functions because they focus on executing an atomic task.
 
-no-duplicate-string
+##### no-duplicate-string
+
 On the surface, cleaning up repetitive string literals by declaring and reusing a constant may seem like a nit picky comment to leave on someone's pull request. You must consider that maybe that string literal will need to be updated one day and it would be much easier to update one constant rather than multiple occurrences, possibly across multiple files.
 prefer-immediate-return
 Much like this article you're reading now, no one likes to read more than they have to. So remember, code like this:
@@ -226,7 +242,7 @@ const unnecessaryUseOfCharacters = () => ({ foo: 'bar' });
 If you want to follow along you can start by cloning this repo. It already has ESLint and the SonarJS plugin configured. Start by opening src/Before.tsx in your IDE. There are a number of issues in these components which we will fix using the linter. From your CLI in the root directory run npm run lint you should see some output like the following.
 
 ~~~bash
-4:30  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
+    4:30  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
     6:3   error    'a' is never reassigned. Use 'const' instead                                                prefer-const
    11:30  error    Missing return type on function                                                             @typescript-eslint/explicit-function-return-type
    11:30  error    Arrow function has a complexity of 10. Maximum allowed is 9                                 complexity
@@ -259,12 +275,14 @@ If you want to follow along you can start by cloning this repo. It already has E
 ✖ 29 problems (27 errors, 2 warnings)
 ~~~
 
-Open your `src/AfterWithAutomatedFixes.tsx` file to see how different the code looks compared to `src/Before.tsx`. A lot of improvements have been automatically applied, you didn't have to do anything. But as you saw in the console, there is still some more work to be done. For example, we are repeating this line in multiple places:
+Open your `src/AfterWithAutomatedFixes.tsx` file to see how different the code looks compared to `src/Before.tsx`. A lot of improvements have been automatically applied and you didn't have to do anything. But as you saw in the console there is still some more work to be done. For example, we are repeating this line in multiple places:
 
 ~~~ts
 const random = Math.floor(Math.random() * 100);
 ~~~
 
 Let's hoist it to the module scope as a reusable constant. That way, if it needs to be updated one day, we only have to change a single line ; )
+
+Things like `cyclomatic-complexity` will normally need to be resolved manually. The solution is to try and eliminate the number of branches in the code. In this case it's pretty simple, we can just streamline checking every positive integer between 1 and 10 or larger than 10 and check if lesser than / greater than 10.
 
 Once you get a hang of it you can keep reducing functions and components to their lowest common denominator. Before long you are achieving the same functionality with fewer lines of code. In this case we eliminate over 70 lines of code after applying the automated and manual fixes from ESLint and SonarJS.
